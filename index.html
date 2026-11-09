@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Техподдержка</title>
+
+  <style>
+    :root {
+      --accent: #43454f;
+      --ink: #202622;
+      --muted: #65716b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font: 16px/1.6 system-ui, sans-serif;
+      background:
+        linear-gradient(rgba(20, 14, 10, 0.38), rgba(20, 14, 10, 0.38)),
+        url("wood.jpg") center center / cover fixed;
+    }
+
+    .wrap {
+      width: min(960px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 64px 16px;
+      text-align: center;
+      color: white;
+      background: rgba(20, 14, 10, 0.3);
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      line-height: 1.1;
+    }
+
+    header p {
+      color: white;
+    }
+
+    h2 {
+      color: white;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+    }
+
+    .button {
+      display: inline-block;
+      padding: 12px 22px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: white;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    main section {
+      padding: 38px 0;
+    }
+
+    .card {
+      padding: 20px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+    }
+
+    .card h3 {
+      margin: 0 0 6px;
+    }
+
+    .card p {
+      margin-bottom: 0;
+      color: var(--muted);
+    }
+
+    /* Галерея-плёнка */
+    .film {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 10px 2px 18px;
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-color: rgba(255, 255, 255, 0.8) rgba(0, 0, 0, 0.25);
+}
+
+
+    .film-item {
+      flex: 0 0 min(78vw, 320px);
+      padding: 2px;
+      border-radius: 12px;
+      background: rgba(67, 69, 79, 0.95);
+      scroll-snap-align: start;
+    }
+
+    .film-item img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .film-item p {
+      display: none;
+    }
+
+.film {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.film::-webkit-scrollbar {
+  display: none;
+}
+
+    .gallery-hint {
+      color: white;
+      text-shadow: 0 1px 4px #000;
+    }
+
+    .gallery-controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .gallery-controls button {
+      width: 44px;
+      height: 40px;
+      border: 0;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.95);
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    footer {
+      padding: 22px 16px;
+      text-align: center;
+      color: white;
+      background: rgba(20, 14, 10, 0.58);
+    }
+
+    @media (max-width: 600px) {
+      body {
+        background-attachment: scroll;
+      }
+
+      header {
+        padding: 48px 16px;
+      }
+    }
+
+.film-item img {
+  cursor: zoom-in;
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.88);
+}
+
+.lightbox.is-open {
+  display: flex;
+}
+
+.lightbox img {
+  display: block;
+  max-width: 96vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  border: 0;
+  background: transparent;
+  color: white;
+  font-size: 40px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Поддержка в реализации Ваших планов</h1>
+      <p>Ремонт окон,электрики,сантехники. Монтаж кондиционеров/вентиляции. Хоть шкаф собрать, хоть баню=)</p>
+      <a class="button" href="tel:+79234865574">Позвонить: +7 (923) 486-55-74</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section>
+      <div class="gallery-controls">
+        <button type="button" id="prevPhoto" aria-label="Предыдущее фото">‹</button>
+        <button type="button" id="nextPhoto" aria-label="Следующее фото">›</button>
+      </div>
+
+      <div class="film" id="film"></div>
+    </section>
+
+  </main>
+
+  <footer>
+    © <span id="year"></span> Анатолий · +7-923-486-55-74 · Кемерово
+  </footer>
+
+<script>
+  const photos = [
+    { file: "1.jpg", caption: "Пример" },
+    { file: "2.jpg", caption: "" },
+    { file: "3.jpg", caption: "" },
+    { file: "4.jpg", caption: "" },
+    { file: "5.jpg", caption: "" },
+    { file: "6.jpg", caption: "" },
+    { file: "7.jpg", caption: "" },
+    { file: "8.jpg", caption: "" },
+    { file: "9.jpg", caption: "" },
+    { file: "10.jpg", caption: "" },
+    { file: "11.jpg", caption: "" },
+    { file: "12.jpg", caption: "" }
+  ];
+
+  const film = document.getElementById("film");
+  const prevButton = document.getElementById("prevPhoto");
+  const nextButton = document.getElementById("nextPhoto");
+  const copies = 5;
+  const middleCopy = Math.floor(copies / 2);
+
+  const lightbox = document.createElement("div");
+  lightbox.className = "lightbox";
+  lightbox.setAttribute("role", "dialog");
+  lightbox.setAttribute("aria-modal", "true");
+
+  const enlargedImage = document.createElement("img");
+  const closeButton = document.createElement("button");
+  closeButton.className = "lightbox-close";
+  closeButton.type = "button";
+  closeButton.textContent = "×";
+  closeButton.setAttribute("aria-label", "Закрыть фото");
+
+  lightbox.append(enlargedImage, closeButton);
+  document.body.append(lightbox);
+
+  function closeLightbox() {
+    lightbox.classList.remove("is-open");
+    document.body.style.overflow = "";
+  }
+
+  film.addEventListener("click", event => {
+    const image = event.target.closest(".film-item img");
+    if (!image) return;
+
+    enlargedImage.src = image.src;
+    enlargedImage.alt = image.alt;
+    lightbox.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+  });
+
+  closeButton.addEventListener("click", closeLightbox);
+
+  lightbox.addEventListener("click", event => {
+    if (event.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeLightbox();
+  });
+
+
+  function makePhoto(photo) {
+    const item = document.createElement("div");
+    item.className = "film-item";
+
+    const image = document.createElement("img");
+    image.src = "portfolio/" + photo.file;
+    image.alt = photo.caption || "Работа мастера";
+    image.loading = "lazy";
+
+    const caption = document.createElement("p");
+    caption.textContent = photo.caption || "";
+
+    item.append(image, caption);
+    return item;
+  }
+
+  function positionOf(item) {
+    return item.getBoundingClientRect().left
+      - film.getBoundingClientRect().left
+      + film.scrollLeft;
+  }
+
+  if (photos.length > 0) {
+    for (let copy = 0; copy < copies; copy++) {
+      photos.forEach(photo => film.append(makePhoto(photo)));
+    }
+
+    function setStarts() {
+      const starts = [];
+
+      for (let copy = 0; copy < copies; copy++) {
+        starts.push(positionOf(film.children[copy * photos.length]));
+      }
+
+      return starts;
+    }
+
+    function showMiddleCopy() {
+      const starts = setStarts();
+      film.scrollLeft = starts[middleCopy];
+    }
+
+    requestAnimationFrame(showMiddleCopy);
+    window.addEventListener("load", showMiddleCopy, { once: true });
+
+    function recenter() {
+      const starts = setStarts();
+      const copyWidth = starts[1] - starts[0];
+      const middleStart = starts[middleCopy];
+
+      if (!copyWidth) return;
+
+      const current = film.scrollLeft;
+
+      // Пока лента находится в средней копии, ничего не меняем.
+      if (current >= middleStart && current < middleStart + copyWidth) return;
+
+      // Переносим на такое же место в средней копии.
+      const offset = ((current - middleStart) % copyWidth + copyWidth) % copyWidth;
+      film.scrollLeft = middleStart + offset;
+    }
+
+    let scrollTimer;
+
+    if ("onscrollend" in film) {
+      film.addEventListener("scrollend", recenter);
+    } else {
+      film.addEventListener("scroll", () => {
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(recenter, 350);
+      });
+    }
+
+    function moveOnePhoto(direction) {
+      const card = film.querySelector(".film-item");
+      const gap = parseFloat(getComputedStyle(film).gap) || 0;
+
+      film.scrollBy({
+        left: direction * (card.getBoundingClientRect().width + gap),
+        behavior: "smooth"
+      });
+    }
+
+    prevButton.addEventListener("click", () => moveOnePhoto(-1));
+    nextButton.addEventListener("click", () => moveOnePhoto(1));
+  }
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+
+</body>
+</html>
